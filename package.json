@@ -1,0 +1,27 @@
+{
+  "name": "aoc-2020-ts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/weiliddat/aoc-2020-ts.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/weiliddat/aoc-2020-ts/issues"
+  },
+  "homepage": "https://github.com/weiliddat/aoc-2020-ts#readme",
+  "devDependencies": {
+    "@types/lodash": "^4.14.165",
+    "@types/node": "^14.14.10",
+    "lodash": "^4.17.20"
+  },
+  "dependencies": {
+    "ts-node": "^9.0.0"
+  }
+}
