@@ -2,7 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs_1 = require("fs");
 var lodash_1 = require("lodash");
-var input = fs_1.readFileSync('1/input.txt', 'utf-8');
+var path_1 = require("path");
+var input = fs_1.readFileSync(path_1.join(__dirname, 'input.txt'), 'utf-8');
 var numbers = input.split('\n').map(function (v) { return parseInt(v, 10); });
 function cross2(numbers) {
     return lodash_1.flatMap(numbers, function (a) { return lodash_1.map(numbers, function (b) { return [a, b]; }); });

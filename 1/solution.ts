@@ -1,7 +1,8 @@
 import { readFileSync } from 'fs';
 import { filter, flatMap, head, map, sum } from 'lodash';
+import { join } from 'path';
 
-const input = readFileSync('1/input.txt', 'utf-8');
+const input = readFileSync(join(__dirname, 'input.txt'), 'utf-8');
 
 const numbers = input.split('\n').map((v) => parseInt(v, 10));
 

@@ -1,7 +1,8 @@
 import { readFileSync } from 'fs';
+import { join } from 'path';
 import _ from 'lodash';
 
-const input = readFileSync('2/input.txt', 'utf-8');
+const input = readFileSync(join(__dirname, 'input.txt'), 'utf-8');
 
 interface Policy {
   min: number;
@@ -26,7 +27,7 @@ const data = _.split(input, '\n').map((row) => {
   };
 });
 
-function checkValid(policy: Policy, password: string) {
+function checkValid1(policy: Policy, password: string) {
   return _.inRange(
     _.filter(password, (c) => c === policy.char).length,
     policy.min,
@@ -34,8 +35,16 @@ function checkValid(policy: Policy, password: string) {
   );
 }
 
-const numOfValidPasswords = _.filter(data, ({ policy, password }) =>
-  checkValid(policy, password),
-).length;
+const validList1 = _.filter(data, (p) => checkValid1(p.policy, p.password));
 
-console.log(numOfValidPasswords);
+console.log(validList1.length);
+
+function checkValid2(policy: Policy, password: string) {
+  const lettersToCheck = _.at(password, [policy.min - 1, policy.max - 1]);
+  const matches = _.filter(lettersToCheck, (c) => c === policy.char).length;
+  return matches === 1;
+}
+
+const validList2 = _.filter(data, (p) => checkValid2(p.policy, p.password));
+
+console.log(validList2.length);
