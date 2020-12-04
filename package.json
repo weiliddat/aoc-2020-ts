@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "1": "ts-node 1/solution",
-    "2": "ts-node 2/solution"
+    "2": "ts-node 2/solution",
+    "3": "ts-node 3/solution",
+    "4": "ts-node 4/solution"
   },
   "repository": {
     "type": "git",
