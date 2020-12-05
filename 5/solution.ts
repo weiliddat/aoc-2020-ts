@@ -59,3 +59,14 @@ console.log(ticketSeats);
 const highestID = _.maxBy(ticketSeats, 'ID');
 
 console.log(highestID);
+
+const lowestID = _.minBy(ticketSeats, 'ID');
+
+console.log(lowestID);
+
+const seatID = _.xor(
+  _.map(ticketSeats, 'ID'),
+  _.range(_.get(lowestID, 'ID', 0), _.get(highestID, 'ID', 0) + 1),
+);
+
+console.log(seatID);
