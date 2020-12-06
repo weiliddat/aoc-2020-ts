@@ -10,17 +10,25 @@ const answersByGroup = _.split(input, '\n\n').map((v) => {
     list: _.split(ans, ''),
   }));
 
-  const deduplicated = _.union(_.flatMap(memberAnswers, 'list'));
+  const union = _.union(_.flatMap(memberAnswers, 'list'));
+
+  const intersect = _.intersection(..._.map(memberAnswers, 'list'));
 
   return {
     memberAnswers,
-    deduplicated,
-    count: deduplicated.length,
+    union,
+    intersect,
+    anyCount: union.length,
+    everyCount: intersect.length,
   };
 });
 
 console.dir(answersByGroup, { depth: null });
 
-const sumOfUniqueAnswers = _.sumBy(answersByGroup, 'count');
+const sumOfUniqueAnswers = _.sumBy(answersByGroup, 'anyCount');
 
 console.log(sumOfUniqueAnswers);
+
+const sumOfIntersectingAnswers = _.sumBy(answersByGroup, 'everyCount');
+
+console.log(sumOfIntersectingAnswers);
