@@ -37,8 +37,6 @@ const bagRules: BagRule[] = _.chain(input)
   })
   .value();
 
-// console.log(bagRules);
-
 function getAllContains(color: string) {
   let acc: ContainRule = {};
 
@@ -69,3 +67,37 @@ const canHasShinyGold = _.filter(bagRulesFlat, (r) =>
 );
 
 console.log(canHasShinyGold.length);
+
+function countBags(rule: BagRule) {
+  let acc: ContainRule[] = [rule.canContain];
+
+  let nextSearch: BagRule[] = [rule];
+
+  while (!_.isEmpty(nextSearch)) {
+    const matches = _.chain(nextSearch)
+      .map('canContain')
+      .flatMap((c: ContainRule) =>
+        _.flatMap(c, (num, bag): BagRule[] => {
+          const found = _.find(bagRules, { bag });
+          if (found) {
+            return Array(num).fill(found);
+          } else {
+            return [];
+          }
+        }),
+      )
+      .value();
+
+    acc.push(..._.map(matches, 'canContain'));
+    nextSearch = matches;
+  }
+
+  return _.chain(acc)
+    .map((c) => _.sum(_.values(c)))
+    .sum()
+    .value();
+}
+
+const shinyGoldBag = _.find(bagRules, { bag: 'shiny gold' }) as BagRule;
+
+console.log(countBags(shinyGoldBag));
