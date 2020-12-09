@@ -22,4 +22,35 @@ const checkNumbers = (l: number[], ignore: number) =>
     })
     .value();
 
-console.log(checkNumbers(listOfNumbers, 25));
+const weakness = checkNumbers(listOfNumbers, 25);
+
+console.log(weakness);
+
+const indexOfWeakness = _.findIndex(listOfNumbers, weakness);
+
+const possibleNumbers = _.slice(listOfNumbers, 0, indexOfWeakness);
+
+function checkContiguous(l: number[], target: number) {
+  const len = _.size(l);
+  let i = 0;
+  let j = 1;
+  const curr = () => _.slice(l, i, j);
+
+  while (_.sum(curr()) !== target && i < len) {
+    if (j >= len) {
+      i++;
+      j = i;
+    } else {
+      j++;
+    }
+  }
+
+  return curr();
+}
+
+const rangeOfWeakness = checkContiguous(possibleNumbers, weakness);
+
+console.log(rangeOfWeakness);
+
+console.log(_.sum([_.min(rangeOfWeakness), _.max(rangeOfWeakness)]));
+
