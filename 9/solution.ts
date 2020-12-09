@@ -26,9 +26,9 @@ const weakness = checkNumbers(listOfNumbers, 25);
 
 console.log(weakness);
 
-const indexOfWeakness = _.findIndex(listOfNumbers, weakness);
+const indexOfWeakness = _.indexOf(listOfNumbers, weakness);
 
-const possibleNumbers = _.slice(listOfNumbers, 0, indexOfWeakness);
+const possibleNumbers = _.reverse(_.slice(listOfNumbers, 0, indexOfWeakness));
 
 function checkContiguous(l: number[], target: number) {
   const len = _.size(l);
@@ -37,7 +37,7 @@ function checkContiguous(l: number[], target: number) {
   const curr = () => _.slice(l, i, j);
 
   while (_.sum(curr()) !== target && i < len) {
-    if (j >= len) {
+    if (j > len) {
       i++;
       j = i;
     } else {
