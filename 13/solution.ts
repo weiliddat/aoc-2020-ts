@@ -42,47 +42,50 @@ const timestampConstraints = _.split(data[1], ',')
 const fits = (cs: Constraint[], t: number) =>
   _.every(cs, (c) => (t + c.i) % c.b === 0);
 
-function findConstraints(constraints: Constraint[]) {
+function findConstraints(
+  constraints: Constraint[],
+  start?: number,
+  factor?: number,
+) {
   const fitsConstraint = _.partial(fits, constraints);
   const first = _.head(constraints);
-  if (!first) return;
+  if (!first) return 0;
 
-  let t = 0;
-  let f = first.b;
+  let t = start ?? 0;
+  let f = factor ?? first.b;
+  t += f;
   while (!fitsConstraint(t) && t < Number.MAX_SAFE_INTEGER) {
-    // console.log(t);
     t += f;
   }
   return t;
 }
 
 function factorConstraints(constraints: Constraint[]) {
-  const first = _.head(constraints);
-  if (!first) return;
+  let prev = constraints[0].b;
+  let curr = 0;
+  let next = 0;
+  let factor = undefined;
 
-  let f = first.b;
-  let t = f;
-  let a = [0];
+  for (let i = 1; i <= constraints.length; i++) {
+    const slice = _.slice(constraints, 0, i);
 
-  for (let i = 0; i < constraints.length; i++) {
-    const cs = _.slice(constraints, 0, i + 1);
-
-    while (!fits(cs, t)) {
-      t += f;
-    }
-
-    a.push(t);
-
-    f = _.last(a) || f;
-
-    console.log({ t });
-    console.log({ a });
-    console.log({ f });
+    curr = findConstraints(slice, curr, factor);
+    if (i === constraints.length) break;
+    next = findConstraints(slice, curr, factor);
+    factor = next - curr;
+    prev = curr;
   }
 
-  return t;
+  return curr;
 }
 
 console.log(timestampConstraints);
-// console.log(findConstraints(timestampConstraints));
-console.log(factorConstraints(timestampConstraints));
+bench(() => console.log(factorConstraints(timestampConstraints)));
+bench(() => console.log(findConstraints(timestampConstraints)));
+
+function bench(func: any): void {
+  const start = new Date().valueOf();
+  func();
+  const end = new Date().valueOf();
+  console.log(end - start);
+}
