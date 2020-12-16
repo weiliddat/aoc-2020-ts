@@ -31,28 +31,26 @@ function memoryGameCount(starting, end) {
     }
     return { lastSpoken, list };
 }
+/**
+ * pre allocate
+ * use 1-based index to allocate 0 as default
+ */
 function memoryGameMemorize(starting, end) {
-    let list = lodash_1.default.fromPairs(lodash_1.default.range(0, end).map((n) => [n, []]));
-    lodash_1.default.each(starting, (num, i) => pushEntry(list, num, i));
-    let lastSpoken = starting[starting.length - 1];
+    const max = lodash_1.default.max([...starting, end]) || 0;
+    let list = lodash_1.default.fromPairs(lodash_1.default.range(0, max + 1).map((n) => [n, 0]));
+    lodash_1.default.each(starting.slice(0, -1), (num, i) => (list[num] = i + 1));
+    let spoken = starting[starting.length - 1];
     for (let i = starting.length; i < end; i++) {
-        let entry = list[lastSpoken];
-        if (lodash_1.default.isNil(entry) || lodash_1.default.isNil(entry[0]) || lodash_1.default.isNil(entry[1])) {
-            lastSpoken = 0;
+        let prevIndex = list[spoken];
+        list[spoken] = i;
+        if (prevIndex) {
+            spoken = i - prevIndex;
         }
         else {
-            lastSpoken = entry[0] - entry[1];
+            spoken = 0;
         }
-        list = pushEntry(list, lastSpoken, i);
     }
-    return { lastSpoken, list };
+    return { spoken, list };
 }
-function pushEntry(entries, number, index) {
-    entries[number] = cycle(entries[number], index);
-    return entries;
-}
-function cycle(old, index) {
-    return !lodash_1.default.isNil(old[0]) ? [index, old[0]] : [index];
-}
-bench_1.bench(() => console.log(memoryGameCount(starting, 300000).lastSpoken));
-bench_1.bench(() => console.log(memoryGameMemorize(starting, 300000).lastSpoken));
+// bench(() => console.log(memoryGameCount(starting, 30000000).lastSpoken));
+bench_1.bench(() => console.log(memoryGameMemorize(starting, 30000000).spoken));

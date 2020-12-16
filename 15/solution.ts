@@ -31,45 +31,36 @@ function memoryGameCount(starting: number[], end: number) {
   return { lastSpoken, list };
 }
 
-type Indices = [i1?: number, i2?: number];
-
 interface Entries {
-  [number: number]: Indices;
+  [number: number]: number;
 }
 
+/**
+ * pre allocate
+ * use 1-based index to allocate 0 as default
+ */
 function memoryGameMemorize(starting: number[], end: number) {
-  let list: Entries = {};
-  // let list: Entries = _.fromPairs(
-  //   _.range(0, end).map((n) => [n, [] as Indices]),
-  // );
+  const max = _.max([...starting, end]) || 0;
+  let list: Entries = _.fromPairs(_.range(0, max + 1).map((n) => [n, 0]));
 
-  _.each(starting, (num, i) => pushEntry(list, num, i));
+  _.each(starting.slice(0, -1), (num, i) => (list[num] = i + 1));
 
-  let lastSpoken: number = starting[starting.length - 1];
+  let spoken: number = starting[starting.length - 1];
 
   for (let i = starting.length; i < end; i++) {
-    let entry = list[lastSpoken];
+    let prevIndex = list[spoken];
 
-    if (_.isNil(entry) || _.isNil(entry[0]) || _.isNil(entry[1])) {
-      lastSpoken = 0;
+    list[spoken] = i;
+
+    if (prevIndex) {
+      spoken = i - prevIndex;
     } else {
-      lastSpoken = entry[0] - entry[1];
+      spoken = 0;
     }
-
-    list = pushEntry(list, lastSpoken, i);
   }
 
-  return { lastSpoken, list };
+  return { spoken, list };
 }
 
-function pushEntry(entries: Entries, number: number, index: number) {
-  entries[number] = cycle(entries[number], index);
-  return entries;
-}
-
-function cycle(old: Indices, index: number): Indices {
-  return !_.isNil(old) && !_.isNil(old[0]) ? [index, old[0]] : [index];
-}
-
-// bench(() => console.log(memoryGameCount(starting, 300000).lastSpoken));
-bench(() => console.log(memoryGameMemorize(starting, 3000000).lastSpoken));
+// bench(() => console.log(memoryGameCount(starting, 30000000).lastSpoken));
+bench(() => console.log(memoryGameMemorize(starting, 30000000).spoken));
